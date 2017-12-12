@@ -74,7 +74,7 @@ class Ui_chatWindow(object):
         _translate = QtCore.QCoreApplication.translate
         chatWindow.setWindowTitle(_translate("chatWindow", "Chat"))
         self.headbutton.setText(_translate("chatWindow", "头像"))
-        self.namelabel.setText(_translate("chatWindow", "昵称"))
+        #self.namelabel.setText(_translate("chatWindow", "昵称"))
         self.emojibutton.setText(_translate("chatWindow", "☺"))
         self.filebutton.setText(_translate("chatWindow", "文件"))
         self.sentbutton.setText(_translate("chatWindow", "发送"))
