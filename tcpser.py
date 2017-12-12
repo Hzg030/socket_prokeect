@@ -16,9 +16,13 @@ def handlemessage(consock, username):
             break
         data = data.decode('utf-8')
         message = data.split('|')
-        sendto = message[1]
-        print(message[0])
-        condict[sendto].send(message[0].encode())
+        sendto = message[2]
+        mes = message[0] + ':' + message[1]
+        print(mes)
+        try:
+            condict[sendto].send(mes.encode())
+        except KeyError:
+            pass#将信息保存到服务器并等待sendto再次上线
     consock.close()
 
 def handlecon(consock):
@@ -26,27 +30,27 @@ def handlecon(consock):
     user = user.decode('utf-8')
     username = user.split('|')
     if conlist:
-        tellonline(username[1])
+        tellonline(username[2])
         sendonline(consock)
-    conlist.append(username[1])
-    condict[username[1]] = consock
+    conlist.append(username[2])
+    condict[username[2]] = consock
+    print(username[2], '已上线...')
+    handlemessage(consock, username[2])
 
-    print(username[1], '已上线...')
-    handlemessage(consock, username[1])
 
 def sendonline(consock):
     for x in conlist:
-            mes = x + '|2'
+            mes = 'online|' + x + '|2'
             consock.send(mes.encode())
 
 def telloutline(nickname):
     for x in conlist:
-            mes = nickname+'|0'
+            mes = 'online|' + nickname+'|0'
             condict[x].send(mes.encode())
 
 def tellonline(nickname):
     for x in conlist:
-            mes = nickname + '|1'
+            mes = 'online|' + nickname + '|1'
             condict[x].send(mes.encode())
 
 def main():
