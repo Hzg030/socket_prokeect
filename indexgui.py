@@ -36,26 +36,15 @@ class Ui_IndexForm(object):
         self.onlinelist = QtWidgets.QTreeWidget(Form)
         self.onlinelist.setMinimumSize(QtCore.QSize(281, 571))
         self.onlinelist.setObjectName("onlinelist")
-        onlineroot = QtWidgets.QTreeWidgetItem(self.onlinelist)
-        self.disonline(onlineroot)
         self.verticalLayout_2.addWidget(self.onlinelist)
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def disonline(self,onlineroot):
-        item_1 = QtWidgets.QTreeWidgetItem(onlineroot)
-        item_1 = QtWidgets.QTreeWidgetItem(onlineroot)
-        _translate = QtCore.QCoreApplication.translate
-        self.onlinelist.topLevelItem(0).child(0).setText(0, _translate("Form", "新建子项目"))
-        self.onlinelist.topLevelItem(0).child(1).setText(0, _translate("Form", "新建项目"))
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Chat"))
+        self.onlinelist.headerItem().setText(0, _translate("Form", ""))
+        Form.setWindowTitle(_translate("Form", "Chat with"))
         self.headicon.setText(_translate("Form", "PushButton"))
-        __sortingEnabled = self.onlinelist.isSortingEnabled()
-        self.onlinelist.setSortingEnabled(False)
-        self.onlinelist.topLevelItem(0).setText(0, _translate("Form", "在线列表"))
-        self.onlinelist.setSortingEnabled(__sortingEnabled)
+
