@@ -59,7 +59,7 @@ class client:
                                 it = onlineroot.child(x).text(0)
                                 ite = it.split('|')
                                 if ite[0] == mesfrom[0]:
-                                    onlineroot.child(x).setText(0, it + '|有新消息...')#就在主界面显示有新消息··
+                                    onlineroot.child(x).setText(0, it + '|  有新消息...')#就在主界面显示有新消息··
                                     t = threading.Thread(target=self.showmes, args=(mesfrom[0], message, chatwindic, chatwinlist, onlineroot.child(x), it))#并建立线程，当有该聊天窗口是在窗口中显示消息
                                     t.setDaemon(True)
                                     t.start()
@@ -82,12 +82,16 @@ class client:
                 break
 
     def showonline(self, nickname, onlineroot):
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("img/head.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         for x in range(onlineroot.childCount()):#查找新新上线的人是否已存在
             it = onlineroot.child(x).text(0)
+            onlineroot.child(x).serIcon(0, icon)
             ite = it.split('|')
             if nickname == ite[0]:#存在就将其状态改为在线
                 onlineroot.child(x).setText(0, nickname)
                 return
         item_1 = QtWidgets.QTreeWidgetItem(onlineroot)
+        item_1.setIcon(0, icon)
         item_1.setText(0, nickname)
 
