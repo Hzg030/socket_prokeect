@@ -39,6 +39,8 @@ class Ui_IndexForm(object):
         self.verticalLayout_2.addWidget(self.onlinelist)
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
 
+        self.headicon.setStyleSheet("border-image:url(img/head.png);")
+
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -46,5 +48,5 @@ class Ui_IndexForm(object):
         _translate = QtCore.QCoreApplication.translate
         self.onlinelist.headerItem().setText(0, _translate("Form", ""))
         Form.setWindowTitle(_translate("Form", "Chat with"))
-        self.headicon.setText(_translate("Form", "PushButton"))
+        #self.headicon.setText(_translate("Form", "PushButton"))
 
