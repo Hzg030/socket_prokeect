@@ -19,6 +19,7 @@ class Ui_chatWindow(object):
         self.headbutton = QtWidgets.QPushButton(chatWindow)
         self.headbutton.setMinimumSize(QtCore.QSize(61, 61))
         self.headbutton.setMaximumSize(QtCore.QSize(61, 61))
+
         self.headbutton.setObjectName("headbutton")
         self.horizontalLayout_3.addWidget(self.headbutton)
         self.namelabel = QtWidgets.QLabel(chatWindow)
@@ -67,15 +68,15 @@ class Ui_chatWindow(object):
         self.horizontalLayout.addWidget(self.sentbutton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
+        self.headbutton.setStyleSheet("border-image: url(img/head.png);")
+        self.emojibutton.setStyleSheet("border-image: url(img/emoji.ico);")
+        self.filebutton.setStyleSheet("border-image: url(img/file.png);")
+
         self.retranslateUi(chatWindow)
         QtCore.QMetaObject.connectSlotsByName(chatWindow)
 
     def retranslateUi(self, chatWindow):
         _translate = QtCore.QCoreApplication.translate
         chatWindow.setWindowTitle(_translate("chatWindow", "Chat"))
-        self.headbutton.setText(_translate("chatWindow", "头像"))
-        #self.namelabel.setText(_translate("chatWindow", "昵称"))
-        self.emojibutton.setText(_translate("chatWindow", "☺"))
-        self.filebutton.setText(_translate("chatWindow", "文件"))
         self.sentbutton.setText(_translate("chatWindow", "发送"))
 
