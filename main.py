@@ -52,6 +52,7 @@ class chatwindow(QtWidgets.QWidget,Ui_chatWindow):#聊天窗口类
         self.sendto = sendto
         self.nickname = loginwin.idewindow.nickname
         self.sentbutton.clicked.connect(self.sendmessage)
+        self.filebutton.clicked.connect(self.choosefile)
 
     def closeEvent(self, event):
         loginwin.idewindow.chatwinlist.remove(self.sendto)
@@ -67,9 +68,11 @@ class chatwindow(QtWidgets.QWidget,Ui_chatWindow):#聊天窗口类
             strin = ''
         self.textsent.clear()
 
-    def recmessage(self):#监听并接收消息
-        pass
-
+    def choosefile(self):
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, "选择文件", "C:\\Users\Administrator\Desktop", '*')
+        if filename:
+            filemes = "file|" + self.nickname + '|' + self.sendto + '|' + filename[0]
+            loginwin.clnt.tcpclisock.send(filemes.encode())
 
 class loginwindow(QtWidgets.QWidget,Ui_Form):#登陆窗口类
     def __init__(self):
