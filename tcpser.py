@@ -9,6 +9,14 @@ def handlemessage(consock, username):
             data = consock.recv(BUFSIZ)
         except ConnectionResetError:
             print(username, '已下线...')
+            cursor = con.cursor()
+            sql = """UPDATE user SET onlline = 0 WHERE nickname = '""" + username + """'"""  # 将该用户的改为不在线
+            try:
+                cursor.execute(sql)
+                con.commit()
+            except:
+                con.rollback()
+            cursor.close()
             condict.pop(username)
             conlist.remove(username)
             if conlist:
@@ -18,13 +26,19 @@ def handlemessage(consock, username):
             break
         data = data.decode('utf-8')
         message = data.split('|')
-        sendto = message[2]
-        mes = message[0] + ':' + message[1]
-        print(mes)
-        try:
-            condict[sendto].send(mes.encode())
-        except KeyError:
-            sql_upload_message(message)#调用从上传消息到数据库方法
+        if message[0] == 'file':
+            filemes = 'file|' + message[1] + '|' + message[3]
+            condict[message[2]].send(filemes.encode())
+        elif message[0] == 'recfile':
+            recfilemes = 'recfile|' + message[1] + '|' + message[2] + '|' + message[4]
+            condict[message[3]].send(recfilemes.encode())
+        else:
+            sendto = message[2]
+            mes = message[0] + ':' + message[1]
+            try:
+                condict[sendto].send(mes.encode())
+            except KeyError:
+                sql_upload_message(message)#调用从上传消息到数据库方法
 
     consock.close()
 
@@ -32,14 +46,14 @@ def handlecon(consock):
     user = consock.recv(BUFSIZ)
     user = user.decode('utf-8')
     username = user.split('|')
-    print(username[2] + "已上线...")
+    print(username[1] + "已上线...")
     if conlist:
-        tellonline(username[2])
-        sendonline(consock)
-    conlist.append(username[2])
-    condict[username[2]] = consock
-    sql_check_new_message(username[2])#调用从数据库检查是否有新消息方法
-    handlemessage(consock, username[2])
+        tellonline(username[1])#告知其他用户有人上线
+    sendonline(username[1], consock)#告知该用户已在线上的人
+    conlist.append(username[1])
+    condict[username[1]] = consock
+    sql_check_new_message(username[1])#调用从数据库检查是否有新消息方法
+    handlemessage(consock, username[1])
 
 def sql_check_new_message(username):
     cursor = con.cursor()
@@ -52,8 +66,13 @@ def sql_check_new_message(username):
     except:
         con.rollback()
     if sqlsearch:
-        print(sqlsearch[0][0])
-        sql = """select fromwho ,mes from message where sendto = '""" + username + """'"""  # 如果存在该用户就查询该用户是否有未收到的消息
+        sql = """UPDATE user SET onlline = 1 WHERE nickname = '""" + username + """'"""  # 如果存在该用户就将该用户的改为在线
+        try:
+            cursor.execute(sql)
+            con.commit()
+        except:
+            con.rollback()
+        sql = """select fromwho ,mes from message where sendto = '""" + username + """'"""  # 查询该用户是否有未收到的消息
         messearch = ''
         try:
             cursor.execute(sql)
@@ -76,7 +95,8 @@ def sql_check_new_message(username):
             except:
                 con.rollback()
     else:  # 如果不存在该用户就在用户列表插入一条新的用户数据
-        sql = """INSERT INTO user (nickname) VALUES ('""" + username + """')"""
+        print('新用户：' + username)
+        sql = """INSERT INTO user (nickname, online) VALUES ('""" + username + """', 1)"""
         try:
             cursor.execute(sql)
             con.commit()
@@ -85,8 +105,8 @@ def sql_check_new_message(username):
             con.rollback()
     cursor.close()
 
-def sql_upload_message(message):
-    cursor = con.cursor()#将信息保存到服务器并等待sendto再次上线
+def sql_upload_message(message):#将信息保存到服务器并等待sendto再次上线
+    cursor = con.cursor()
     sql = """select mes from message where sendto = '""" + message[2] +"""' and fromwho ='""" + message[0] + """'"""
     messearch = ''
     try:
@@ -111,7 +131,23 @@ def sql_upload_message(message):
         con.rollback()
     cursor.close()
 
-def sendonline(consock):
+def sendonline(username, consock):
+    cursor = con.cursor()
+    sql = """Select * from user """  # 检查用户列表的所有用户
+    sqlsearch = ''
+    try:
+        cursor.execute(sql)
+        con.commit()
+        sqlsearch = cursor.fetchall()
+    except:
+        con.rollback()
+    cursor.close()
+    for x in sqlsearch:
+        if x[1] == 0 and x[0] != username:
+            mes = 'online|' + x[0] + '|2'
+            consock.send(mes.encode())
+            mes = 'online|' + x[0] + '|0'
+            consock.send(mes.encode())
     for x in conlist:
             mes = 'online|' + x + '|2'
             consock.send(mes.encode())
