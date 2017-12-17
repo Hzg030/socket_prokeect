@@ -48,5 +48,4 @@ class Ui_IndexForm(object):
         _translate = QtCore.QCoreApplication.translate
         self.onlinelist.headerItem().setText(0, _translate("Form", ""))
         Form.setWindowTitle(_translate("Form", "Chat with"))
-        #self.headicon.setText(_translate("Form", "PushButton"))
 
